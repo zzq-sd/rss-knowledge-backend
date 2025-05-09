@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.knowledge.mapper.KnowledgeArticlesMapper">
+    
+    <resultMap type="KnowledgeArticles" id="KnowledgeArticlesResult">
+        <result property="articleId"    column="article_id"    />
+        <result property="feedId"    column="feed_id"    />
+        <result property="guid"    column="guid"    />
+        <result property="title"    column="title"    />
+        <result property="link"    column="link"    />
+        <result property="description"    column="description"    />
+        <result property="content"    column="content"    />
+        <result property="author"    column="author"    />
+        <result property="publishedDate"    column="published_date"    />
+        <result property="workspaceedAt"    column="Workspaceed_at"    />
+        <result property="processingStatus"    column="processing_status"    />
+        <result property="lastProcessingError"    column="last_processing_error"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectKnowledgeArticlesVo">
+        select article_id, feed_id, guid, title, link, description, content, author, published_date, Workspaceed_at, processing_status, last_processing_error, create_by, create_time, update_by, update_time, remark from knowledge_articles
+    </sql>
+
+    <select id="selectKnowledgeArticlesList" parameterType="KnowledgeArticles" resultMap="KnowledgeArticlesResult">
+        <include refid="selectKnowledgeArticlesVo"/>
+        <where>  
+            <if test="articleId != null "> and article_id = #{articleId}</if>
+            <if test="feedId != null "> and feed_id = #{feedId}</if>
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="author != null  and author != ''"> and author like concat('%', #{author}, '%')</if>
+            <if test="params.beginPublishedDate != null and params.beginPublishedDate != '' and params.endPublishedDate != null and params.endPublishedDate != ''"> and published_date between #{params.beginPublishedDate} and #{params.endPublishedDate}</if>
+            <if test="processingStatus != null "> and processing_status = #{processingStatus}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectKnowledgeArticlesByArticleId" parameterType="Long" resultMap="KnowledgeArticlesResult">
+        <include refid="selectKnowledgeArticlesVo"/>
+        where article_id = #{articleId}
+    </select>
+
+    <insert id="insertKnowledgeArticles" parameterType="KnowledgeArticles" useGeneratedKeys="true" keyProperty="articleId">
+        insert into knowledge_articles
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="feedId != null">feed_id,</if>
+            <if test="guid != null and guid != ''">guid,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="link != null and link != ''">link,</if>
+            <if test="description != null">description,</if>
+            <if test="content != null">content,</if>
+            <if test="author != null">author,</if>
+            <if test="publishedDate != null">published_date,</if>
+            <if test="workspaceedAt != null">Workspaceed_at,</if>
+            <if test="processingStatus != null">processing_status,</if>
+            <if test="lastProcessingError != null">last_processing_error,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="feedId != null">#{feedId},</if>
+            <if test="guid != null and guid != ''">#{guid},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="link != null and link != ''">#{link},</if>
+            <if test="description != null">#{description},</if>
+            <if test="content != null">#{content},</if>
+            <if test="author != null">#{author},</if>
+            <if test="publishedDate != null">#{publishedDate},</if>
+            <if test="workspaceedAt != null">#{workspaceedAt},</if>
+            <if test="processingStatus != null">#{processingStatus},</if>
+            <if test="lastProcessingError != null">#{lastProcessingError},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKnowledgeArticles" parameterType="KnowledgeArticles">
+        update knowledge_articles
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="feedId != null">feed_id = #{feedId},</if>
+            <if test="guid != null and guid != ''">guid = #{guid},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="link != null and link != ''">link = #{link},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="author != null">author = #{author},</if>
+            <if test="publishedDate != null">published_date = #{publishedDate},</if>
+            <if test="workspaceedAt != null">Workspaceed_at = #{workspaceedAt},</if>
+            <if test="processingStatus != null">processing_status = #{processingStatus},</if>
+            <if test="lastProcessingError != null">last_processing_error = #{lastProcessingError},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where article_id = #{articleId}
+    </update>
+
+    <delete id="deleteKnowledgeArticlesByArticleId" parameterType="Long">
+        delete from knowledge_articles where article_id = #{articleId}
+    </delete>
+
+    <delete id="deleteKnowledgeArticlesByArticleIds" parameterType="String">
+        delete from knowledge_articles where article_id in 
+        <foreach item="articleId" collection="array" open="(" separator="," close=")">
+            #{articleId}
+        </foreach>
+    </delete>
+</mapper>

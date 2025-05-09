@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.knowledge.mapper.KnowledgeFeedsMapper">
+    
+    <resultMap type="KnowledgeFeeds" id="KnowledgeFeedsResult">
+        <result property="feedId"    column="feed_id"    />
+        <result property="feedUrl"    column="feed_url"    />
+        <result property="title"    column="title"    />
+        <result property="description"    column="description"    />
+        <result property="siteLink"    column="site_link"    />
+        <result property="lastFetchedAt"    column="last_fetched_at"    />
+        <result property="workspaceIntervalMinutes"    column="Workspace_interval_minutes"    />
+        <result property="isEnabled"    column="is_enabled"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectKnowledgeFeedsVo">
+        select feed_id, feed_url, title, description, site_link, last_fetched_at, Workspace_interval_minutes, is_enabled, create_by, create_time, update_by, update_time, remark from knowledge_feeds
+    </sql>
+
+    <select id="selectKnowledgeFeedsList" parameterType="KnowledgeFeeds" resultMap="KnowledgeFeedsResult">
+        <include refid="selectKnowledgeFeedsVo"/>
+        <where>  
+            <if test="feedUrl != null  and feedUrl != ''"> and feed_url like concat('%', #{feedUrl}, '%')</if>
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="params.beginLastFetchedAt != null and params.beginLastFetchedAt != '' and params.endLastFetchedAt != null and params.endLastFetchedAt != ''"> and last_fetched_at between #{params.beginLastFetchedAt} and #{params.endLastFetchedAt}</if>
+            <if test="workspaceIntervalMinutes != null "> and Workspace_interval_minutes = #{workspaceIntervalMinutes}</if>
+            <if test="isEnabled != null "> and is_enabled = #{isEnabled}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectKnowledgeFeedsByFeedId" parameterType="Long" resultMap="KnowledgeFeedsResult">
+        <include refid="selectKnowledgeFeedsVo"/>
+        where feed_id = #{feedId}
+    </select>
+
+    <insert id="insertKnowledgeFeeds" parameterType="KnowledgeFeeds" useGeneratedKeys="true" keyProperty="feedId">
+        insert into knowledge_feeds
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="feedUrl != null and feedUrl != ''">feed_url,</if>
+            <if test="title != null">title,</if>
+            <if test="description != null">description,</if>
+            <if test="siteLink != null">site_link,</if>
+            <if test="lastFetchedAt != null">last_fetched_at,</if>
+            <if test="workspaceIntervalMinutes != null">Workspace_interval_minutes,</if>
+            <if test="isEnabled != null">is_enabled,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="feedUrl != null and feedUrl != ''">#{feedUrl},</if>
+            <if test="title != null">#{title},</if>
+            <if test="description != null">#{description},</if>
+            <if test="siteLink != null">#{siteLink},</if>
+            <if test="lastFetchedAt != null">#{lastFetchedAt},</if>
+            <if test="workspaceIntervalMinutes != null">#{workspaceIntervalMinutes},</if>
+            <if test="isEnabled != null">#{isEnabled},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKnowledgeFeeds" parameterType="KnowledgeFeeds">
+        update knowledge_feeds
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="feedUrl != null and feedUrl != ''">feed_url = #{feedUrl},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="siteLink != null">site_link = #{siteLink},</if>
+            <if test="lastFetchedAt != null">last_fetched_at = #{lastFetchedAt},</if>
+            <if test="workspaceIntervalMinutes != null">Workspace_interval_minutes = #{workspaceIntervalMinutes},</if>
+            <if test="isEnabled != null">is_enabled = #{isEnabled},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where feed_id = #{feedId}
+    </update>
+
+    <delete id="deleteKnowledgeFeedsByFeedId" parameterType="Long">
+        delete from knowledge_feeds where feed_id = #{feedId}
+    </delete>
+
+    <delete id="deleteKnowledgeFeedsByFeedIds" parameterType="String">
+        delete from knowledge_feeds where feed_id in 
+        <foreach item="feedId" collection="array" open="(" separator="," close=")">
+            #{feedId}
+        </foreach>
+    </delete>
+</mapper>

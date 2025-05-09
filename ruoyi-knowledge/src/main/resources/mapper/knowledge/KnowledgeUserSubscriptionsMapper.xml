@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.knowledge.mapper.KnowledgeUserSubscriptionsMapper">
+    
+    <resultMap type="KnowledgeUserSubscriptions" id="KnowledgeUserSubscriptionsResult">
+        <result property="subscriptionId"    column="subscription_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="feedId"    column="feed_id"    />
+        <result property="customTitle"    column="custom_title"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectKnowledgeUserSubscriptionsVo">
+        select subscription_id, user_id, feed_id, custom_title, create_by, create_time, update_by, update_time, remark from knowledge_user_subscriptions
+    </sql>
+
+    <select id="selectKnowledgeUserSubscriptionsList" parameterType="KnowledgeUserSubscriptions" resultMap="KnowledgeUserSubscriptionsResult">
+        <include refid="selectKnowledgeUserSubscriptionsVo"/>
+        <where>  
+            <if test="subscriptionId != null "> and subscription_id = #{subscriptionId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="feedId != null "> and feed_id = #{feedId}</if>
+            <if test="customTitle != null  and customTitle != ''"> and custom_title like concat('%', #{customTitle}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectKnowledgeUserSubscriptionsBySubscriptionId" parameterType="Long" resultMap="KnowledgeUserSubscriptionsResult">
+        <include refid="selectKnowledgeUserSubscriptionsVo"/>
+        where subscription_id = #{subscriptionId}
+    </select>
+
+    <insert id="insertKnowledgeUserSubscriptions" parameterType="KnowledgeUserSubscriptions" useGeneratedKeys="true" keyProperty="subscriptionId">
+        insert into knowledge_user_subscriptions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="feedId != null">feed_id,</if>
+            <if test="customTitle != null">custom_title,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="feedId != null">#{feedId},</if>
+            <if test="customTitle != null">#{customTitle},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKnowledgeUserSubscriptions" parameterType="KnowledgeUserSubscriptions">
+        update knowledge_user_subscriptions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="feedId != null">feed_id = #{feedId},</if>
+            <if test="customTitle != null">custom_title = #{customTitle},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where subscription_id = #{subscriptionId}
+    </update>
+
+    <delete id="deleteKnowledgeUserSubscriptionsBySubscriptionId" parameterType="Long">
+        delete from knowledge_user_subscriptions where subscription_id = #{subscriptionId}
+    </delete>
+
+    <delete id="deleteKnowledgeUserSubscriptionsBySubscriptionIds" parameterType="String">
+        delete from knowledge_user_subscriptions where subscription_id in 
+        <foreach item="subscriptionId" collection="array" open="(" separator="," close=")">
+            #{subscriptionId}
+        </foreach>
+    </delete>
+</mapper>
